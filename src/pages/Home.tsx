@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   createWallet,
   decryptWallet,
+  getBalance,
   privateKeyToAccountTest,
 } from "../services/Web3Services";
 
@@ -37,6 +38,13 @@ export const Home = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       ></input>
+      <button
+        onClick={async () => {
+          await getBalance(password);
+        }}
+      >
+        getBalance
+      </button>
     </>
   );
 };
