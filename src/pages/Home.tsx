@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { createWallet, decryptWallet } from "../services/Web3Services";
+import {
+  createWallet,
+  decryptWallet,
+  privateKeyToAccountTest,
+} from "../services/Web3Services";
 
 export const Home = () => {
   const [wallet, setWallet] = useState({});
@@ -19,6 +23,13 @@ export const Home = () => {
         }}
       >
         DecryptWallet
+      </button>
+      <button
+        onClick={async () => {
+          await privateKeyToAccountTest(password);
+        }}
+      >
+        private key to account
       </button>
       <input
         type="text"
