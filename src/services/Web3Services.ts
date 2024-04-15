@@ -6,11 +6,15 @@ const web3 = new Web3(RPC_URL.Sepolio_URL);
 const accounts = web3.eth.accounts;
 
 export async function createWallet(Passphrase: string) {
-  const wallet = accounts.wallet.create(10);
+  const wallet = accounts.wallet.create(1);
   const encryptedWallet = await wallet.encrypt(Passphrase);
   console.log(wallet);
   console.log(encryptedWallet);
   return encryptedWallet;
+}
+
+export async function importAccount(privateKey: string) {
+  return accounts.wallet.add(privateKey);
 }
 
 export async function decryptWallet(wallet: any, password: string) {
@@ -38,9 +42,31 @@ export async function getBalance(address: string) {
   return balance;
 }
 
-export async function sendTransaction(provider: string, reciever: string) {
+export async function sendTransaction(
+  provider: string,
+  reciever: string,
+  value: string,
+  data?: string,
+) {
   const send = await web3.eth.sendTransaction({
-    from: provider,
+    from: provider?.address,
     to: reciever,
+    value: value, // needs to be hasched data
+    gas: 300000,
+    gasPrice: await web3.eth.getGasPrice(),
+    data: data,
   });
+  console.log(send);
+
+  const signedTransaction = await accounts.signTransaction(
+    send,
+    provider.privateKey,
+  );
+  const txReceipt = await web3.eth.sendSignedTransaction(
+    signedTransaction.send,
+  );
+
+  console.log("Transaction receipt", txReceipt);
+
+  return txReceipt;
 }
